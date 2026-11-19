@@ -3,5 +3,12 @@
     "firstName": "Shaien",
     "lastName": "Quadir",
     "email": "shaien.test.20261117.02@example.com",
-    "password": "Test@123456"
+    "password": "Test@123456",
+    "country": "Bangladesh",
+    "city": "Dhaka",
+    "address1": "House 10, Road 5",
+    "address2": "",
+    "zipCode": "1230",
+    "phone": "01700000000",
+    "fax": ""
 }
