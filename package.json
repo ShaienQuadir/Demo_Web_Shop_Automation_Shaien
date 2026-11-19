@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+  "test": "playwright test",
+  "test:headed": "playwright test --headed",
+  "test:report": "playwright show-report",
+  "test:api": "newman run \"postman/API_Automation_Shaien.postman_collection.json\" -e \"postman/API_Environment.postman_environment.json\""
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
