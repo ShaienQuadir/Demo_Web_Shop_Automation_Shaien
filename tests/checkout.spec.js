@@ -1,3 +1,4 @@
+
 const { test, expect } = require('@playwright/test');
 const LoginPage = require('../pages/LoginPage');
 const registerData = require('../test-data/registerData.json');
@@ -69,121 +70,122 @@ test('TC_CHECKOUT_001 - Product Search to Order Confirmation', async ({ page }) 
     await page.locator('#termsofservice').check();
     await page.locator('#checkout').click();
 
-// Step 11: Checkout Page
-await expect(page.locator('.page-title'))
-    .toContainText('Checkout');
+    // Step 11: Checkout Page
+    await expect(page.locator('.page-title'))
+        .toContainText('Checkout');
 
+    // Step 12: Fill Billing Address if New Address Form is visible
+    const billingFirstName = page.locator('#BillingNewAddress_FirstName');
 
-// Step 12: Fill Billing Address if New Address Form is visible
+    if (await billingFirstName.isVisible()) {
 
-const billingFirstName = page.locator('#BillingNewAddress_FirstName');
+        await billingFirstName.fill(registerData.firstName);
 
-if (await billingFirstName.isVisible()) {
+        await page.locator('#BillingNewAddress_LastName')
+            .fill(registerData.lastName);
 
-    await billingFirstName.fill(registerData.firstName);
+        await page.locator('#BillingNewAddress_Email')
+            .fill(registerData.email);
 
-    await page.locator('#BillingNewAddress_LastName')
-        .fill(registerData.lastName);
+        await page.locator('#BillingNewAddress_CountryId')
+            .selectOption({ label: registerData.country });
 
-    await page.locator('#BillingNewAddress_Email')
-        .fill(registerData.email);
+        await page.locator('#BillingNewAddress_City')
+            .fill(registerData.city);
 
-    await page.locator('#BillingNewAddress_CountryId')
-        .selectOption({ label: registerData.country });
+        await page.locator('#BillingNewAddress_Address1')
+            .fill(registerData.address1);
 
-    await page.locator('#BillingNewAddress_City')
-        .fill(registerData.city);
+        await page.locator('#BillingNewAddress_ZipPostalCode')
+            .fill(registerData.zipCode);
 
-    await page.locator('#BillingNewAddress_Address1')
-        .fill(registerData.address1);
+        await page.locator('#BillingNewAddress_PhoneNumber')
+            .fill(registerData.phone);
+    }
 
-    await page.locator('#BillingNewAddress_ZipPostalCode')
-        .fill(registerData.zipCode);
+    // Step 13: Continue Billing Address
+    await page.locator(
+        '#billing-buttons-container .new-address-next-step-button'
+    ).click();
 
-    await page.locator('#BillingNewAddress_PhoneNumber')
-        .fill(registerData.phone);
-}
+    await page.waitForLoadState('domcontentloaded');
 
-// Step 13: Continue Billing Address
+    // Step 14: Continue Shipping Address
+    const continueButtons = page.locator(
+        'input.new-address-next-step-button'
+    );
 
-await page.locator(
-    '#billing-buttons-container .new-address-next-step-button'
-).click();
+    await expect(continueButtons.nth(1)).toBeVisible();
+    await continueButtons.nth(1).click();
 
-await page.waitForLoadState('domcontentloaded');
+    // Step 15: Select Shipping Method - Ground
+    await expect(
+        page.locator('.shipping-method-next-step-button')
+    ).toBeVisible();
 
-// Step 14: Continue Shipping Address
+    await page.locator(
+        'input[name="shippingoption"]'
+    ).first().check();
 
-const continueButtons = page.locator(
-    'input.new-address-next-step-button'
-);
+    // Step 16: Continue Shipping Method
+    await page.locator(
+        '.shipping-method-next-step-button'
+    ).click();
 
-await expect(continueButtons.nth(1)).toBeVisible();
+    // Step 17: Select Cash On Delivery
+    await expect(
+        page.locator('.payment-method-next-step-button')
+    ).toBeVisible();
 
-await continueButtons.nth(1).click();
+    await page.locator(
+        'input[name="paymentmethod"]'
+    ).first().check();
 
+    // Step 18: Continue Payment Method
+    await page.locator(
+        '.payment-method-next-step-button'
+    ).click();
 
+    // Step 19: Continue Payment Information
+    await expect(
+        page.locator('.payment-info-next-step-button')
+    ).toBeVisible();
 
-// Step 15: Select Shipping Method - Ground
+    await page.locator(
+        '.payment-info-next-step-button'
+    ).click();
 
-await expect(
-    page.locator('.shipping-method-next-step-button')
-).toBeVisible();
+    // Step 20: Confirm Order
+    await expect(
+        page.locator('.confirm-order-next-step-button')
+    ).toBeVisible();
 
-await page.locator(
-    'input[name="shippingoption"]'
-).first().check();
+    await page.locator(
+        '.confirm-order-next-step-button'
+    ).click();
 
-// Step 16: Continue Shipping Method
+    // Step 21: Verify Order Confirmation
+    await expect(page.locator('.section.order-completed'))
+        .toBeVisible();
 
-await page.locator(
-    '.shipping-method-next-step-button'
-).click();
+    await expect(page.locator('.order-completed .title'))
+        .toContainText('Your order has been successfully processed');
 
-// Step 17: Select Cash On Delivery
+    // Step 22: Verify and Open Order Details
+    const orderDetailsLink = page.locator(
+        'a[href*="/orderdetails/"]'
+    );
 
-await expect(
-    page.locator('.payment-method-next-step-button')
-).toBeVisible();
+    await expect(orderDetailsLink).toBeVisible();
+    await expect(orderDetailsLink).toHaveCount(1);
 
-await page.locator(
-    'input[name="paymentmethod"]'
-).first().check();
+    await orderDetailsLink.click();
 
-// Step 18: Continue Payment Method
+    await expect(page).toHaveURL(/\/orderdetails\//);
 
-await page.locator(
-    '.payment-method-next-step-button'
-).click();
+    await expect(page.locator('.page-title'))
+        .toContainText('Order');
 
-// Step 19: Continue Payment Information
-
-await expect(
-    page.locator('.payment-info-next-step-button')
-).toBeVisible();
-
-await page.locator(
-    '.payment-info-next-step-button'
-).click();
-
-// Step 20: Confirm Order
-
-await expect(
-    page.locator('.confirm-order-next-step-button')
-).toBeVisible();
-
-await page.locator(
-    '.confirm-order-next-step-button'
-).click();
-
-// Step 21: Verify Order Confirmation
-
-await expect(page.locator('.section.order-completed'))
-    .toBeVisible();
-
-await expect(page.locator('.order-completed .title'))
-    .toContainText('Your order has been successfully processed');
-
-console.log('ORDER SUCCESSFULLY COMPLETED!');
+    console.log('ORDER DETAILS VERIFIED SUCCESSFULLY!');
 
 });
