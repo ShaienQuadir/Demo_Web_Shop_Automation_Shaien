@@ -46,7 +46,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Updated name is correct\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.name).to.eql(\"Shaien Quadir Updated\");\r\n});\r\n\r\npm.test(\"Updated email is correct\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.email).to.eql(\"shaien.updated@example.com\");\r\n});\r\n\r\npm.test(\"Updated company is correct\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.company.name).to.eql(\"Technovista Ltd.\");\r\n});"
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Updated name is correct\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.name).to.eql(\"Shaien Updated\");\r\n});\r\n\r\npm.test(\"Updated email is correct\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.email).to.eql(\"shaien.updated@example.com\");\r\n});\r\n\r\npm.test(\"Updated company is correct\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.company.name).to.eql(\"Shaien QA Company\");\r\n});"
             ]
           }
         }
@@ -61,7 +61,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"id\": {{userId}},\r\n    \"name\": \"{{updatedName}}\",\r\n    \"username\": \"ShaienQA\",\r\n    \"email\": \"{{updatedEmail}}\",\r\n    \"address\": {\r\n        \"street\": \"Automation Street\",\r\n        \"city\": \"Dhaka\"\r\n    },\r\n    \"phone\": \"123-456-7890\",\r\n    \"website\": \"shaienqa.com\",\r\n    \"company\": {\r\n        \"name\": \"{{updatedCompany}}\"\r\n    }\r\n}",
+          "raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"Shaien Updated\",\r\n    \"username\": \"ShaienQA\",\r\n    \"email\": \"shaien.updated@example.com\",\r\n    \"address\": {\r\n        \"street\": \"Automation Street\",\r\n        \"city\": \"Dhaka\"\r\n    },\r\n    \"phone\": \"123-456-7890\",\r\n    \"website\": \"shaienqa.com\",\r\n    \"company\": {\r\n        \"name\": \"Shaien QA Company\"\r\n    }\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -69,7 +69,7 @@
           }
         },
         "url": {
-          "raw": "https://jsonplaceholder.typicode.com/users/{{userId}}",
+          "raw": "https://jsonplaceholder.typicode.com/users/1",
           "protocol": "https",
           "host": [
             "jsonplaceholder",
@@ -78,7 +78,7 @@
           ],
           "path": [
             "users",
-            "{{userId}}"
+            "1"
           ]
         }
       },
