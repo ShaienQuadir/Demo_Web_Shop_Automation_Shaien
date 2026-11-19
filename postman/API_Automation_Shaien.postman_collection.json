@@ -15,7 +15,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response is JSON\", function () {\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Response contains 10 users\", function () {\r\n    const users = pm.response.json();\r\n    pm.expect(users).to.have.lengthOf(10);\r\n});\r\n\r\nconst users = pm.response.json();\r\n\r\npm.environment.set(\"userId\", users[0].id);\r\n\r\nconsole.log(\"Saved User ID:\", users[0].id);"
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response is JSON\", function () {\r\n    pm.response.to.be.json;\r\n});\r\n\r\nconst users = pm.response.json();\r\n\r\npm.test(\"Response is a non-empty array\", function () {\r\n    pm.expect(users).to.be.an(\"array\").that.is.not.empty;\r\n});\r\n\r\npm.test(\"Response contains 10 users\", function () {\r\n    pm.expect(users).to.have.lengthOf(10);\r\n});\r\n\r\npm.test(\"Every user has id, name and email\", function () {\r\n    users.forEach(function (user) {\r\n        pm.expect(user).to.have.property(\"id\");\r\n        pm.expect(user).to.have.property(\"name\");\r\n        pm.expect(user).to.have.property(\"email\");\r\n    });\r\n});\r\n\r\npm.environment.set(\"userId\", users[0].id);\r\n\r\nconsole.log(\"Saved User ID:\", users[0].id);\r\npm.environment.set(\"userPhone\", users[0].phone);"
             ]
           }
         }
@@ -46,7 +46,16 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Updated name is correct\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.name).to.eql(\"Shaien Updated\");\r\n});\r\n\r\npm.test(\"Updated email is correct\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.email).to.eql(\"shaien.updated@example.com\");\r\n});\r\n\r\npm.test(\"Updated company is correct\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.company.name).to.eql(\"Shaien QA Company\");\r\n});"
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst responseData = pm.response.json();\r\n\r\npm.test(\"Returned ID matches saved ID\", function () {\r\n    pm.expect(responseData.id).to.eql(Number(pm.environment.get(\"userId\")));\r\n});\r\n\r\npm.test(\"Updated name is correct\", function () {\r\n    pm.expect(responseData.name).to.eql(pm.variables.get(\"updatedName\"));\r\n});\r\n\r\npm.test(\"Updated email is correct\", function () {\r\n    pm.expect(responseData.email).to.eql(pm.variables.get(\"updatedEmail\"));\r\n});\r\n\r\npm.test(\"Updated company is correct\", function () {\r\n    pm.expect(responseData.company.name).to.eql(pm.variables.get(\"updatedCompanyName\"));\r\n});\r\n\r\npm.test(\"Phone is not empty\", function () {\r\n    pm.expect(responseData.phone).to.be.a(\"string\").and.not.empty;\r\n});"
+            ]
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const timestamp = Date.now();\r\n\r\npm.variables.set(\"updatedName\", \"Shaien Updated \" + timestamp);\r\npm.variables.set(\"updatedEmail\", \"shaien\" + timestamp + \"@example.com\");\r\npm.variables.set(\"updatedCompanyName\", \"Shaien QA Company \" + timestamp);"
             ]
           }
         }
@@ -61,7 +70,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"Shaien Updated\",\r\n    \"username\": \"ShaienQA\",\r\n    \"email\": \"shaien.updated@example.com\",\r\n    \"address\": {\r\n        \"street\": \"Automation Street\",\r\n        \"city\": \"Dhaka\"\r\n    },\r\n    \"phone\": \"123-456-7890\",\r\n    \"website\": \"shaienqa.com\",\r\n    \"company\": {\r\n        \"name\": \"Shaien QA Company\"\r\n    }\r\n}",
+          "raw": "{\r\n    \"name\": \"{{updatedName}}\",\r\n    \"email\": \"{{updatedEmail}}\",\r\n    \"phone\": \"{{userPhone}}\",\r\n    \"company\": {\r\n        \"name\": \"{{updatedCompanyName}}\"\r\n    }\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -69,7 +78,7 @@
           }
         },
         "url": {
-          "raw": "https://jsonplaceholder.typicode.com/users/1",
+          "raw": "https://jsonplaceholder.typicode.com/users/{{userId}}",
           "protocol": "https",
           "host": [
             "jsonplaceholder",
@@ -78,7 +87,7 @@
           ],
           "path": [
             "users",
-            "1"
+            "{{userId}}"
           ]
         }
       },
