@@ -158,13 +158,27 @@ newman run "postman/API_Automation_Shaien.postman_collection.json" -e "postman/A
 
 ## Run UI and API Tests
 
-Run all UI tests:
+### Run UI Tests
 
 ```bash
 npm test
 ```
 
-Run API tests:
+### Run API Tests
+
+```bash
+npm run test:api
+```
+
+### Run UI and API Tests Sequentially
+
+First, run all UI tests:
+
+```bash
+npm test
+```
+
+Then, run all API tests:
 
 ```bash
 npm run test:api
