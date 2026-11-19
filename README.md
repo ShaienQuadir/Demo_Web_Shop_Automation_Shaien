@@ -27,13 +27,9 @@ This project is created as part of the SQA course assignment. It includes UI Aut
 
 ### Q2 – Update User
 - Method: PUT
-- Endpoint: https://jsonplaceholder.typicode.com/users/{{userId}}
-- Used Environment Variables:
-  - userId
-  - updatedName
-  - updatedEmail
-  - updatedCompany
-- Validated updated name, email and company.
+- Endpoint: https://jsonplaceholder.typicode.com/users/1
+- Updated user information using a JSON request body.
+- Validated status code, updated name, email and company.
 
 ## Newman CLI Execution
 
